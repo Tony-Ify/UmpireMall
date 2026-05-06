@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchInput } from '../search-input/search-input';
-
 @Component({
   selector: 'app-navbar', // Changed to match app.html usage
   imports: [CommonModule, SearchInput],

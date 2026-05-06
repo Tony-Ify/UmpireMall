@@ -1,0 +1,90 @@
+.container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .back-btn {
+      background-color: #666;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .back-btn:hover {
+      background-color: #555;
+    }
+    .product-detail {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+    .product-image img {
+      width: 100%;
+      border-radius: 8px;
+    }
+    .product-info h1 {
+      margin-top: 0;
+      color: #333;
+    }
+    .category {
+      color: #666;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+    .rating {
+      color: #ffc107;
+      margin: 10px 0;
+    }
+    .description {
+      line-height: 1.6;
+      margin: 20px 0;
+      color: #555;
+    }
+    .stock {
+      margin: 20px 0;
+      font-weight: bold;
+    }
+    .stock.out-of-stock {
+      color: #f44336;
+    }
+    .price {
+      font-size: 32px;
+      font-weight: bold;
+      color: #2e7d32;
+      margin: 20px 0;
+    }
+    .actions {
+      margin-top: 30px;
+    }
+    .add-btn, .remove-btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .add-btn {
+      background-color: #4caf50;
+      color: white;
+    }
+    .add-btn:hover:not(:disabled) {
+      background-color: #45a049;
+    }
+    .add-btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    .remove-btn {
+      background-color: #f44336;
+      color: white;
+    }
+    .remove-btn:hover {
+      background-color: #da190b;
+    }
+    @media (max-width: 768px) {
+      .product-detail {
+        grid-template-columns: 1fr;}
+
+      }

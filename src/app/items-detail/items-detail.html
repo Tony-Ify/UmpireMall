@@ -1,0 +1,36 @@
+<div class="container" *ngIf="product">
+      <button class="back-btn" routerLink="/products">← Back to Products</button>
+      
+      <div class="product-detail">
+        <div class="product-image">
+          <img src="product.imageUrl" alt="product.name">
+        </div>
+        
+        <div class="product-info">
+          <h1>{{ product.name }}</h1>
+          <div class="category">Category: {{ category }}</div>
+          <div class="rating">Rating: ⭐ {{ product.rating }}/5</div>
+          <p class="description">{{ product.description }}</p>
+          <div class="stock" [class.out-of-stock]="!product.inStock">
+            {{ product.inStock ? '✓ In Stock' : '✗ Out of Stock' }}
+          </div>
+          <div class="price">${{ product.price }}</div>
+          
+          <div class="actions">
+            <button 
+              *ngIf="!isInCart" 
+              class="add-btn" 
+              (click)="addToCart()"
+              [disabled]="!product.inStock">
+              Add to Cart
+            </button>
+            <button 
+              *ngIf="isInCart" 
+              class="remove-btn" 
+              (click)="removeFromCart()">
+              Remove from Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>

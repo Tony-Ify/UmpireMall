@@ -1,0 +1,27 @@
+<div class="container">
+      <h1>Shopping Cart</h1>
+      
+      <div *ngIf="cartItems.length === 0" class="empty-cart">
+        <p>Your cart is empty</p>
+        <button routerLink="/products" class="shop-btn">Continue Shopping</button>
+      </div>
+      
+      <div *ngIf="cartItems.length > 0">
+        <div class="cart-items">
+          <div *ngFor="let item of cartItems" class="cart-item">
+            <div class="item-info">
+              <div class="item-name">{{ item.name }}</div>
+              <div class="item-price">${{ item.price }}</div>
+            </div>
+            <button class="remove-item-btn" (click)="removeFromCart(item.id)">
+              Remove
+            </button>
+          </div>
+        </div>
+        
+        <div class="cart-summary">
+          <div class="total">Total: ${{ getTotal() }}</div>
+          <button class="checkout-btn" (click)="checkout()">Checkout</button>
+        </div>
+      </div>
+    </div>
