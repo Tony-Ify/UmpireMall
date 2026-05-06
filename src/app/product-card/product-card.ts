@@ -7,6 +7,10 @@ export interface Product {
   price: number;
   description: string;
   imageUrl: string;
+  rating?: number;
+  category?: string;
+  inStock?: boolean;
+
 }
 
 @Component({
@@ -14,6 +18,7 @@ export interface Product {
   imports: [CommonModule],
   templateUrl: './product-card.html',
   styleUrl: './product-card.css',
+  
 
   
 })

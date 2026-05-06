@@ -1,36 +1,55 @@
 <div class="container">
-      <div class="search-section">
-        <input 
-          type="text" 
-          class="search-input"
-          placeholder="Search products..."
-          [(ngModel)]="searchQuery"
-          (input)="filterProducts()"
-        />
-      </div>
+  <!-- Search Bar -->
+  <div class="search-section">
+    <input 
+      type="text" 
+      class="search-input"
+      placeholder="Search products..."
+      [(ngModel)]="searchQuery"
+      (input)="filterProducts()"
+    />
+  </div>
 
-      <div class="product-grid">
-        <div *ngFor="let product of filteredProducts" class="product-card">
-          <img src="product.imageUrl" alt="product.name" class="product-image">
-          <div class="product-info">
-            <h3>{{ product.name }}</h3>
-            <p class="description">{{ product.description | slice:0:100 }}...</p>
-            <div class="rating">
-              Rating: ⭐ {{ product.rating }}/5
-            </div>
-            <div class="stock" [class.out-of-stock]="!product.inStock">
-              {{ product.inStock ? '✓ In Stock' : '✗ Out of Stock' }}
-            </div>
-            <div class="product-footer">
-              <span class="price">${{ product.price }}</span>
-              <button 
-                class="view-btn" 
-                [routerLink]="['/product', product.id]"
-                [queryParams]="{category: product.category}">
-                View Details
-              </button>
-            </div>
-          </div>
+  <!-- Products Grid -->
+  <div class="product-grid">
+    <div *ngFor="let product of filteredProducts" class="product-card">
+      <!-- Product Image -->
+      <img src="product.imageUrl" alt="product.name" class="product-image">
+      
+      
+      <div class="product-info">
+        <h3>{{ product.name }}</h3>
+        <p class="description">{{ product.description }}</p>
+        <div class="rating"> {{ product.rating }} / 5</div>
+        <div class="price">${{ product.price }}</div>
+      
+        
+        <!-- Action Buttons -->
+        <div class="actions">
+          <button class="view-btn" [routerLink]="['/product', product.id]">
+            View Details
+          </button>
+          
+          <button 
+            *ngIf="!isInCart(product.id)" 
+            class="add-btn" 
+            (click)="addToCart(product)">
+            Add to Cart
+          </button>
+          
+          <button 
+            *ngIf="isInCart(product.id)" 
+            class="remove-btn" 
+            (click)="removeFromCart(product.id)">
+            Remove
+          </button>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="filteredProducts.length === 0" class="empty-state">
+    <p>No products found</p>
+  </div>
+</div>

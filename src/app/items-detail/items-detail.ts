@@ -8,11 +8,12 @@ import { OnInit } from '@angular/core';
 @Component({
   selector: 'app-items-detail',
   imports: [CommonModule, RouterModule],
-  templateUrl: './items-detail.html',
-  styleUrl: './items-detail.css',
+ templateUrl: './items-detail.html',
+  styleUrls:['./items-detail.css'] ,
 })
+
 export class ItemsDetail implements OnInit {
-product: Product | null = null;
+  product: Product | null = null;
   category: string = '';
   isInCart: boolean = false;
 

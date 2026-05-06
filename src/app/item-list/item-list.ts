@@ -8,7 +8,7 @@ import { ProductService } from '../services/product-service';
   selector: 'app-item-list',
   imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './item-list.html',
-  styleUrl: './item-list.css',
+  styleUrls: ['./item-list.css'],
 })
 export class ItemList {
    products: Product[] = [];
