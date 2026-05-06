@@ -1,0 +1,12 @@
+<nav class="navbar">
+  <div class="nav-brand">
+    <h1> UMPIRE MALL </h1>
+  </div>
+  
+  <app-search-input (search)="onSearch($event)"></app-search-input>
+
+  <div class="cart-badge">
+    🛒 Cart
+    <span class="badge">{{ cartCount }}</span>
+  </div>
+</nav>

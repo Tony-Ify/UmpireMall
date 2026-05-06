@@ -1,0 +1,18 @@
+<div 
+  class="product-card" 
+  [class.selected]="selected"
+  (click)="onCardClick()">
+  <div class="product-image">
+    <img src="{{ product.imageUrl }}" alt="{{ product.name }}">
+  </div>
+  <div class="product-info">
+    <h3 class="product-name">{{ product.name }}</h3>
+    <p class="product-description">{{ product.description }}</p>
+    <div class="product-footer">
+      <span class="product-price">${{ product.price }}</span>
+      <button class="add-btn" [class.added]="selected">
+        {{ selected ? '✓ Added' : 'Add to Cart' }}
+      </button>
+    </div>
+  </div>
+</div>
