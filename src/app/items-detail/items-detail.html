@@ -1,47 +1,56 @@
-<div class="container" *ngIf="product">
-  <!-- Back Button -->
-  <button class="back-btn" routerLink="/products">← Back to Products</button>
-  
-  
-  <div class="product-detail">
-    
-    <div class="image-section">
-      <img src="product.imageUrl" alt="product.name">
-    </div>
-    <div class="info-section">
-      <h1>{{ product.name }}</h1>
-      <p class="category">Category: {{ category }}</p>
-      <p class="rating"> {{ product.rating }} / 5</p>
-      <p class="description">{{ product.description }}</p>
-      <p class="price">${{ product.price }}</p>
-    
+ <div class="product-detail-container" *ngIf="!loading">
+      <button class="back-btn" (click)="goBack()">← Back to Products</button>
       
-      <!-- Action Buttons -->
-      <div class="actions">
-        <button 
-          *ngIf="!isInCart" 
-          class="add-btn" 
-          (click)="addToCart()">
-          Add to Cart
-        </button>
+      <div class="product-detail-card" *ngIf="product">
+        <div class="product-image-section">
+          <img src="product.imageUrl" alt="product.name" class="detail-image">
+        </div>
         
-        <button 
-          *ngIf="isInCart" 
-          class="remove-btn" 
-          (click)="removeFromCart()">
-          Remove from Cart
-        </button>
+        <div class="product-info-section">
+          <h1 class="detail-name">{{ product.name }}</h1>
+          <span class="detail-category">{{ category }}</span>
+          
+          <div class="detail-rating">
+            <span class="stars">{{ '★'.repeat(Math.floor(product.rating)) }}{{ '☆'.repeat(5 - Math.floor(product.rating)) }}</span>
+            <span class="rating-value">{{ product.rating }} / 5.0</span>
+          </div>
+          
+          <p class="detail-description">{{ product.description }}</p>
+          
+          <div class="detail-price">{{ product.price | currency }}</div>
+          
+          <div class="stock-status" [class.in-stock]="product.inStock" [class.out-of-stock]="!product.inStock">
+            {{ product.inStock ? '✓ In Stock' : '✗ Out of Stock' }}
+          </div>
+          
+          <div class="action-buttons">
+            <button 
+              *ngIf="!isInCart"
+              class="add-btn"
+              (click)="addToCart()"
+              [disabled]="!product.inStock"
+            >
+              Add to Cart
+            </button>
+            <button 
+              *ngIf="isInCart"
+              class="remove-btn"
+              (click)="removeFromCart()"
+            >
+              Remove from Cart
+            </button>
+          </div>
+        </div>
       </div>
       
-      <!-- Cart Status Message -->
-      <div *ngIf="isInCart" class="cart-message">
-        ✓ This item is in your cart
+      <div class="not-found" *ngIf="!product && !loading">
+        <h2>Product not found</h2>
+        <p>The product you're looking for doesn't exist or has been removed.</p>
+        <button class="back-btn" (click)="goBack()">Go Back</button>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- Loading State -->
-<div *ngIf="!product" class="loading">
-  Loading product details...
-</div>
+    
+    <div class="loading" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Loading product details...</p>
+    </div>

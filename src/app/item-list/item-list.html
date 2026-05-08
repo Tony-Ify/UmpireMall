@@ -1,55 +1,52 @@
-<div class="container">
-  <!-- Search Bar -->
-  <div class="search-section">
-    <input 
-      type="text" 
-      class="search-input"
-      placeholder="Search products..."
-      [(ngModel)]="searchQuery"
-      (input)="filterProducts()"
-    />
-  </div>
-
-  <!-- Products Grid -->
-  <div class="product-grid">
-    <div *ngFor="let product of filteredProducts" class="product-card">
-      <!-- Product Image -->
-      <img src="product.imageUrl" alt="product.name" class="product-image">
+ <div class="item-list-container">
+      <h1 class="title">Our Products</h1>
       
+      <div class="search-container">
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+          placeholder="Search products..."
+          class="search-input"
+        >
+        <button *ngIf="searchTerm" (click)="clearSearch()" class="clear-btn">✕</button>
+      </div>
       
-      <div class="product-info">
-        <h3>{{ product.name }}</h3>
-        <p class="description">{{ product.description }}</p>
-        <div class="rating"> {{ product.rating }} / 5</div>
-        <div class="price">${{ product.price }}</div>
-      
-        
-        <!-- Action Buttons -->
-        <div class="actions">
-          <button class="view-btn" [routerLink]="['/product', product.id]">
-            View Details
-          </button>
-          
-          <button 
-            *ngIf="!isInCart(product.id)" 
-            class="add-btn" 
-            (click)="addToCart(product)">
-            Add to Cart
-          </button>
-          
-          <button 
-            *ngIf="isInCart(product.id)" 
-            class="remove-btn" 
-            (click)="removeFromCart(product.id)">
-            Remove
-          </button>
+      <div class="products-grid" *ngIf="!loading">
+        <div 
+          *ngFor="let product of filteredProducts" 
+          class="product-card"
+          [class.selected]="productService.isInCart(product.id)"
+          (click)="navigateToProduct(product)"
+        >
+          <img src="product.imageUrl" alt="product.name" class="product-image">
+          <div class="product-info">
+            <h3 class="product-name">{{ product.name }}</h3>
+            <p class="product-category">{{ product.category }}</p>
+            <div class="product-footer">
+              <span class="product-price">{{ product.price | currency }}</span>
+              <div class="rating">
+                <span class="stars">{{ '★'.repeat(Math.floor(product.rating)) }}{{ '☆'.repeat(5 - Math.floor(product.rating)) }}</span>
+                <span class="rating-value">{{ product.rating }}</span>
+              </div>
+            </div>
+            <button 
+              class="add-to-cart-btn"
+              [class.in-cart]="productService.isInCart(product.id)"
+              (click)="addToCart($event, product)"
+            >
+              {{ productService.isInCart(product.id) ? '✓ In Cart' : 'Add to Cart' }}
+            </button>
+          </div>
         </div>
       </div>
+      
+      <div class="loading" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Loading products...</p>
+      </div>
+      
+      <div class="no-results" *ngIf="!loading && filteredProducts.length === 0">
+        <p>No products found matching "{{ searchTerm }}"</p>
+      </div>
     </div>
-  </div>
-
-  <!-- Empty State -->
-  <div *ngIf="filteredProducts.length === 0" class="empty-state">
-    <p>No products found</p>
-  </div>
-</div>

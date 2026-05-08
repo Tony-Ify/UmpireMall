@@ -1,28 +1,35 @@
 import { Injectable } from '@angular/core';
-import { Product } from '../product-card/product-card';
-import { Observable } from 'rxjs/internal/Observable';  
-import { HttpClient } from '@angular/common/http';   
-import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+export interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  imageUrl: string;
+  inStock: boolean;
+  rating: number;
+}
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ProductService {
- private apiUrl = 'http://localhost:3000/products';
-  
-  private cartItems: Product[] = [];
+  private apiUrl = 'http://localhost:3000/products';
   private cartSubject = new BehaviorSubject<Product[]>([]);
+  cart$ = this.cartSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    // Load cart from localStorage if available
+    // Load cart from localStorage on initialization
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
-      this.cartItems = JSON.parse(savedCart);
-      this.cartSubject.next(this.cartItems);
+      this.cartSubject.next(JSON.parse(savedCart));
     }
   }
 
-  // Product API methods
   getAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl);
   }
@@ -31,59 +38,37 @@ export class ProductService {
     return this.http.get<Product>(`${this.apiUrl}/${id}`);
   }
 
-  // Cart functionality methods
-  getCartItems(): Observable<Product[]> {
-    return this.cartSubject.asObservable();
+  getCart(): Product[] {
+    return this.cartSubject.value;
   }
 
   addToCart(product: Product): void {
-    const exists = this.cartItems.some(item => item.id === product.id);
-    if (!exists) {
-      this.cartItems.push(product);
-      this.updateCart();
-      console.log(`Added ${product.name} to cart. Cart size: ${this.cartItems.length}`);
+    const currentCart = this.cartSubject.value;
+    if (!this.isInCart(product.id)) {
+      const updatedCart = [...currentCart, product];
+      this.cartSubject.next(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
     }
   }
 
   removeFromCart(productId: number): void {
-    const removedProduct = this.cartItems.find(item => item.id === productId);
-    this.cartItems = this.cartItems.filter(item => item.id !== productId);
-    this.updateCart();
-    if (removedProduct) {
-      console.log(`Removed ${removedProduct.name} from cart. Cart size: ${this.cartItems.length}`);
-    }
-  }
-
-  toggleCart(product: Product): void {
-    const exists = this.cartItems.some(item => item.id === product.id);
-    if (exists) {
-      this.removeFromCart(product.id);
-    } else {
-      this.addToCart(product);
-    }
+    const currentCart = this.cartSubject.value;
+    const updatedCart = currentCart.filter(item => item.id !== productId);
+    this.cartSubject.next(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
   }
 
   isInCart(productId: number): boolean {
-    return this.cartItems.some(item => item.id === productId);
+    return this.cartSubject.value.some(item => item.id === productId);
   }
 
-  clearCart(): void {
-    this.cartItems = [];
-    this.updateCart();
-    console.log('Cart cleared');
-  }
-
-  getCartTotal(): number {
-    return this.cartItems.reduce((sum, item) => sum + item.price, 0);
-  }
-
-  getCartCount(): number {
-    return this.cartItems.length;
-  }
-
-  private updateCart(): void {
-    this.cartSubject.next(this.cartItems);
-    localStorage.setItem('cart', JSON.stringify(this.cartItems));
+  searchProducts(searchTerm: string): Observable<Product[]> {
+    return this.getAllProducts().pipe(
+      map(products => products.filter(product => 
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchTerm.toLowerCase())
+      ))
+    );
   }
 }
-

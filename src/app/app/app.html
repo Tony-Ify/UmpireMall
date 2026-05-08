@@ -1,15 +1,20 @@
-<app-navbar
-  [cartCount]="cart.length"
-  (search)="onSearch($event)">
-</app-navbar>
-
-<h1>Product Cart</h1>
-
-<div class="product-grid">
-  <app-product-card
-    *ngFor="let product of filteredProducts"
-    [product]="product"
-    [selected]="isSelected(product)"
-    (select)="toggleCart($event)">
-  </app-product-card>
-</div>
+<nav class="navbar">
+      <div class="nav-brand">
+        <a routerLink="/" class="logo">UMPIRE MALL</a>
+      </div>
+      <div class="nav-links">
+        <a routerLink="/products" class="nav-link">Products</a>
+        <a routerLink="/cart" class="nav-link cart-link">
+          🛒 Cart
+          <span class="cart-count" *ngIf="cartCount > 0">{{ cartCount }}</span>
+        </a>
+      </div>
+    </nav>
+    
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+    
+    <footer class="footer">
+      <p>&copy; 2024 UMPIREMALL - Product Cart Application</p>
+    </footer>
