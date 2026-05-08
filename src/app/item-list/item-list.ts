@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
-import { ProductService, Product} from '../services/product-service';
+import { ProductService} from '../services/product-service';
+import { Product } from '../product-card/product-card';
 @Component({
   selector: 'app-item-list',
   imports: [CommonModule, FormsModule],
@@ -23,6 +24,16 @@ export class ItemList implements OnInit {
 
   ngOnInit(): void {
     this.loadProducts();
+  }
+
+   getStars(rating: number): string {
+    const fullStars = Math.floor(rating);
+    const emptyStars = 5 - fullStars;
+    return '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
+  }
+
+  getRatingFloor(rating: number): number {
+    return Math.floor(rating);
   }
 
   loadProducts(): void {

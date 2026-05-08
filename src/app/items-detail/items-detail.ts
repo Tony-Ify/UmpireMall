@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { ProductService, Product } from '../services/product-service';
+import { ProductService } from '../services/product-service';
 import { CommonModule } from '@angular/common';
 import { OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Product } from '../product-card/product-card';
 @Component({
   selector: 'app-items-detail',
   imports: [CommonModule, RouterModule],
@@ -21,6 +22,12 @@ export class ItemsDetail implements OnInit {
     private router: Router,
     private productService: ProductService
   ) {}
+
+   getStars(rating: number): string {
+    const fullStars = Math.floor(rating);
+    const emptyStars = 5 - fullStars;
+    return '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {

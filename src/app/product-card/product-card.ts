@@ -1,17 +1,17 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-export interface Product {  
+export interface Product {
   id: number;
   name: string;
-  price: number;
   description: string;
+  price: number;
+  category: string;
   imageUrl: string;
-  rating?: number;
-  category?: string;
-  inStock?: boolean;
-
+  inStock: boolean;
+  rating: number;
 }
+
 
 @Component({
   selector: 'app-product-card',
