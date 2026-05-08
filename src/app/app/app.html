@@ -1,20 +1,16 @@
-<nav class="navbar">
+ <nav class="navbar">
       <div class="nav-brand">
-        <a routerLink="/" class="logo">UMPIRE MALL</a>
+        <h1 routerLink="/">UMPIRE MALL</h1>
       </div>
+      
       <div class="nav-links">
-        <a routerLink="/products" class="nav-link">Products</a>
-        <a routerLink="/cart" class="nav-link cart-link">
-          🛒 Cart
-          <span class="cart-count" *ngIf="cartCount > 0">{{ cartCount }}</span>
+        <a routerLink="/products" routerLinkActive="active">Products</a>
+        <a routerLink="/cart" routerLinkActive="active" class="cart-link">
+          🛒 Cart <span class="badge">{{ cartCount }}</span>
         </a>
       </div>
     </nav>
-    
-    <main class="main-content">
+
+    <main>
       <router-outlet></router-outlet>
     </main>
-    
-    <footer class="footer">
-      <p>&copy; 2024 UMPIREMALL - Product Cart Application</p>
-    </footer>

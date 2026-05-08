@@ -7,9 +7,4 @@ import { Router } from '@angular/router';
   styleUrl: './not-found.css',
 })
 export class NotFound {
-    constructor(private router: Router) {}
-
-    goHome(): void {
-       this.router.navigate(['/']);
-      }
 }

@@ -1,47 +1,37 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { ProductService } from '../services/product-service';
 import { Product } from '../product-card/product-card';
 
 
 @Component({
   selector: 'app-cart',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './cart.html',
   styleUrl: './cart.css',
 })
 export class Cart {
- cartItems: Product[] = [];
-  totalPrice: number = 0;
+  cartItems: Product[] = [];
 
-  constructor(
-    private productService: ProductService,
-    private router: Router
-  ) {}
+  constructor(private productService: ProductService) {}
 
-  ngOnInit(): void {
-    this.productService.cart$.subscribe(cart => {
-      this.cartItems = cart;
-      this.calculateTotal();
+  ngOnInit() {
+    this.productService.getCartItems().subscribe(items => {
+      this.cartItems = items;
     });
   }
 
-  calculateTotal(): void {
-    this.totalPrice = this.cartItems.reduce((total, item) => total + item.price, 0);
+  removeFromCart(productId: number) {
+    this.productService.removeFromCart(productId);
   }
 
-  removeItem(product: Product): void {
-    this.productService.removeFromCart(product.id);
+  getTotal(): number {
+    return this.productService.getCartTotal();
   }
 
-  clearCart(): void {
-    this.cartItems.forEach(item => {
-      this.productService.removeFromCart(item.id);
-    });
-  }
-
-  goToProducts(): void {
-    this.router.navigate(['/products']);
+  checkout() {
+    alert(`Thank you for your purchase! Total: $${this.getTotal()}`);
+    this.productService.clearCart();
   }
 }

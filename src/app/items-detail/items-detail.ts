@@ -15,59 +15,52 @@ export class ItemsDetail implements OnInit {
    product: Product | null = null;
   category: string = '';
   isInCart: boolean = false;
-  loading: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private productService: ProductService
   ) {}
 
-   getStars(rating: number): string {
-    const fullStars = Math.floor(rating);
-    const emptyStars = 5 - fullStars;
-    return '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
-  }
-
-  ngOnInit(): void {
+  ngOnInit() {
     this.route.params.subscribe(params => {
-      const id = Number(params['id']);
-      this.category = this.route.snapshot.queryParams['category'] || '';
+      const id = +params['id'];
       this.loadProduct(id);
+    });
+
+    this.route.queryParams.subscribe(params => {
+      this.category = params['category'] || 'Not specified';
     });
   }
 
-  loadProduct(id: number): void {
-    this.loading = true;
+  loadProduct(id: number) {
     this.productService.getProductById(id).subscribe({
-      next: (product) => {
-        this.product = product;
-        this.isInCart = this.productService.isInCart(product.id);
-        this.loading = false;
+      next: (data) => {
+        this.product = data;
+        this.checkIfInCart();
       },
       error: (error) => {
         console.error('Error loading product:', error);
-        this.product = null;
-        this.loading = false;
       }
     });
   }
 
-  addToCart(): void {
+  checkIfInCart() {
+    if (this.product) {
+      this.isInCart = this.productService.isInCart(this.product.id);
+    }
+  }
+
+  addToCart() {
     if (this.product) {
       this.productService.addToCart(this.product);
       this.isInCart = true;
     }
   }
 
-  removeFromCart(): void {
+  removeFromCart() {
     if (this.product) {
       this.productService.removeFromCart(this.product.id);
       this.isInCart = false;
     }
-  }
-
-  goBack(): void {
-    this.router.navigate(['/products']);
   }
 }

@@ -7,75 +7,65 @@ import { ProductService} from '../services/product-service';
 import { Product } from '../product-card/product-card';
 @Component({
   selector: 'app-item-list',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './item-list.html',
   styleUrls: ['./item-list.css']
 })
-export class ItemList implements OnInit {
-  products: Product[] = [];
+export class ItemList {
+ products: Product[] = [];
   filteredProducts: Product[] = [];
-  searchTerm: string = '';
-  loading: boolean = true;
+  searchQuery: string = '';
+  cartCount: number = 0;
 
-  constructor(
-    public productService: ProductService,
-    private router: Router
-  ) {}
+  constructor(private productService: ProductService) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.loadProducts();
+    this.loadCartCount();
   }
 
-   getStars(rating: number): string {
-    const fullStars = Math.floor(rating);
-    const emptyStars = 5 - fullStars;
-    return '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
-  }
-
-  getRatingFloor(rating: number): number {
-    return Math.floor(rating);
-  }
-
-  loadProducts(): void {
-    this.loading = true;
+  loadProducts() {
     this.productService.getAllProducts().subscribe({
-      next: (products) => {
-        this.products = products;
-        this.filteredProducts = products;
-        this.loading = false;
+      next: (data) => {
+        this.products = data;
+        this.filteredProducts = data;
       },
       error: (error) => {
         console.error('Error loading products:', error);
-        this.loading = false;
       }
     });
   }
 
-  onSearch(): void {
-    if (this.searchTerm.trim()) {
-      this.productService.searchProducts(this.searchTerm).subscribe({
-        next: (products) => {
-          this.filteredProducts = products;
-        }
-      });
-    } else {
-      this.filteredProducts = this.products;
-    }
-  }
-
-  clearSearch(): void {
-    this.searchTerm = '';
-    this.filteredProducts = this.products;
-  }
-
-  navigateToProduct(product: Product): void {
-    this.router.navigate(['/product', product.id], {
-      queryParams: { category: product.category }
+  loadCartCount() {
+    this.productService.getCartItems().subscribe(() => {
+      this.cartCount = this.productService.getCartCount();
     });
   }
 
-  addToCart(event: Event, product: Product): void {
-    event.stopPropagation();
+  filterProducts() {
+    if (!this.searchQuery.trim()) {
+      this.filteredProducts = this.products;
+    } else {
+      const query = this.searchQuery.toLowerCase();
+      this.filteredProducts = this.products.filter(product =>
+        product.name.toLowerCase().includes(query) ||
+        product.description.toLowerCase().includes(query)
+      );
+    }
+  }
+
+  isInCart(productId: number): boolean {
+    return this.productService.isInCart(productId);
+  }
+
+  addToCart(product: Product): void {
     this.productService.addToCart(product);
+    // Trigger change detection for the specific product
+    this.filteredProducts = [...this.filteredProducts];
+  }
+
+  removeFromCart(productId: number): void {
+    this.productService.removeFromCart(productId);
+    this.filteredProducts = [...this.filteredProducts];
   }
 }

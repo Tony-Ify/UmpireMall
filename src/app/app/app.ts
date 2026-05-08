@@ -2,21 +2,19 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../services/product-service';
 import { RouterModule, RouterOutlet,  RouterLink } from '@angular/router';
-
+import { Product } from '../product-card/product-card';
 @Component({
   selector: 'app-root',
-  imports: [ CommonModule,RouterLink, RouterModule, RouterOutlet],
+  imports: [ RouterOutlet, CommonModule, RouterModule],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
 export class App {
- title = 'product-cart';
-  
+   cartCount: number = 0;
+
   constructor(private productService: ProductService) {
-    this.productService.cart$.subscribe(cart => {
-      this.cartCount = cart.length;
+    this.productService.getCartItems().subscribe((items: Product[]) => {
+      this.cartCount = items.length;
     });
   }
-  
-  cartCount: number = 0;
 }

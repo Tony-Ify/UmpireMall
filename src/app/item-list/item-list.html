@@ -1,52 +1,51 @@
-<div class="item-list-container">
-  <h1 class="title">Our Products</h1>
-  
-  <div class="search-container">
-    <input 
-      type="text" 
-      [(ngModel)]="searchTerm"
-      (input)="onSearch()"
-      placeholder="Search products..."
-      class="search-input"
-    >
-    <button *ngIf="searchTerm" (click)="clearSearch()" class="clear-btn">✕</button>
-  </div>
-  
-  <div class="products-grid" *ngIf="!loading">
-    <div 
-      *ngFor="let product of filteredProducts" 
-      class="product-card"
-      [class.selected]="productService.isInCart(product.id)"
-      (click)="navigateToProduct(product)"
-    >
-      <img src="product.imageUrl" alt="product.name" class="product-image">
-      <div class="product-info">
-        <h3 class="product-name">{{ product.name }}</h3>
-        <p class="product-category">{{ product.category }}</p>
-        <div class="product-footer">
-          <span class="product-price">{{ product.price | currency }}</span>
-          <div class="rating">
-            <span class="stars">{{ getStars(product.rating) }}</span>
-            <span class="rating-value">{{ product.rating }}</span>
+ <div class="container">
+      <div class="search-section">
+        <input 
+          type="text" 
+          class="search-input"
+          placeholder="Search products..."
+          [(ngModel)]="searchQuery"
+          (input)="filterProducts()"
+        />
+      </div>
+
+      <div class="product-grid">
+        <div *ngFor="let product of filteredProducts" class="product-card" [class.in-cart]="isInCart(product.id)">
+          <img src="product.imageUrl" alt="product.name" class="product-image">
+          <div class="product-info">
+            <h3>{{ product.name }}</h3>
+            <p class="description">{{ product.description | slice:0:100 }}...</p>
+            <div class="rating">
+              Rating: ⭐ {{ product.rating }}/5
+            </div>
+            <div class="stock" [class.out-of-stock]="!product.inStock">
+              {{ product.inStock ? '✓ In Stock' : '✗ Out of Stock' }}
+            </div>
+            <div class="product-footer">
+              <span class="price">${{ product.price }}</span>
+              <div class="buttons">
+                <button 
+                  class="view-btn" 
+                  [routerLink]="['/product', product.id]"
+                  [queryParams]="{category: product.category}">
+                  View Details
+                </button>
+                <button 
+                  *ngIf="!isInCart(product.id)" 
+                  class="add-btn" 
+                  (click)="addToCart(product)"
+                  [disabled]="!product.inStock">
+                  Add to Cart
+                </button>
+                <button 
+                  *ngIf="isInCart(product.id)" 
+                  class="remove-btn" 
+                  (click)="removeFromCart(product.id)">
+                  Remove
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <button 
-          class="add-to-cart-btn"
-          [class.in-cart]="productService.isInCart(product.id)"
-          (click)="addToCart($event, product)"
-        >
-          {{ productService.isInCart(product.id) ? '✓ In Cart' : 'Add to Cart' }}
-        </button>
       </div>
     </div>
-  </div>
-  
-  <div class="loading" *ngIf="loading">
-    <div class="spinner"></div>
-    <p>Loading products...</p>
-  </div>
-  
-  <div class="no-results" *ngIf="!loading && filteredProducts.length === 0">
-    <p>No products found matching "{{ searchTerm }}"</p>
-  </div>
-</div>
